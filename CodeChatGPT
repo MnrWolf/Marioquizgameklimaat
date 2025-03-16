@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aardrijkskunde Quiz Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: skyblue;
+        }
+        canvas {
+            display: block;
+            background-color: lightgray;
+        }
+        #quiz-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="quiz-container">
+        <h2 id="quiz-question">Vraag</h2>
+        <button class="quiz-option" onclick="answerQuestion('A')">A</button>
+        <button class="quiz-option" onclick="answerQuestion('B')">B</button>
+        <button class="quiz-option" onclick="answerQuestion('C')">C</button>
+        <button class="quiz-option" onclick="answerQuestion('D')">D</button>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const player = {
+            x: 50,
+            y: canvas.height - 100,
+            width: 50,
+            height: 50,
+            speed: 5,
+            dy: 0,
+            gravity: 0.5,
+            jumping: false
+        };
+
+        const coins = Array.from({ length: 20 }, (_, i) => ({ x: (i + 1) * 150, y: canvas.height - 120, collected: false }));
+
+        const questions = [
+            { question: "Welke van deze voorbeelden hoort bij het begrip: Weer?", options: ["A", "B", "C", "D"], answer: ["A", "C"] },
+            { question: "Welke zinnen zijn juist?", options: ["A", "B", "C", "D"], answer: ["B", "D"] },
+            { question: "Welke betekenis past bij het begrip: Landklimaat", options: ["A", "B", "C", "D"], answer: ["C"] },
+            { question: "Welke uitspraak over de zoninvalshoek klopt?", options: ["A", "B", "C"], answer: ["A"] },
+            { question: "Wie heeft er gelijk?", options: ["Jan", "Tim"], answer: ["Jan"] },
+            { question: "Waar zal het in januari het warmst zijn?", options: ["A", "B", "C", "D"], answer: ["D"] },
+            { question: "Welk begrip past bij deze omschrijving: Waterdamp wordt vloeibaar en verandert in druppels?", options: ["A", "B", "C", "D"], answer: ["C"] },
+            { question: "Wat is geen onderdeel van de korte waterkringloop?", options: ["A", "B", "C", "D"], answer: ["A"] },
+            { question: "Welk klimaat ontbreekt in de volgorde?", options: ["A", "B", "C", "D"], answer: ["D"] },
+            { question: "Wat is een belangrijk kenmerk van een tropisch regenwoudklimaat?", options: ["A", "B", "C", "D"], answer: ["A"] },
+            { question: "Wat is het belangrijkste verschil tussen een landklimaat en een zeeklimaat?", options: ["A", "B", "C", "D"], answer: ["A"] },
+            { question: "Welke van deze landen heeft een poolklimaat?", options: ["A", "B", "C", "D"], answer: ["A"] },
+            { question: "Waardoor heeft Nederland een gematigd zeeklimaat?", options: ["A", "B", "C", "D"], answer: ["B"] },
+            { question: "Wat is de belangrijkste oorzaak van neerslag in Nederland?", options: ["A", "B", "C", "D"], answer: ["C"] },
+            { question: "Wat is een belangrijk kenmerk van een poolklimaat?", options: ["A", "B", "C", "D"], answer: ["B"] },
+            { question: "Wat is een belangrijk kenmerk van een toendraklimaat?", options: ["A", "B", "C", "D"], answer: ["A"] },
+            { question: "Welk land heeft de seizoensvolgorde januari = zomer, juni = kerst?", options: ["A", "B", "C", "D"], answer: ["C"] },
+            { question: "Welke factor heeft GEEN invloed op het klimaat?", options: ["A", "B", "C", "D"], answer: ["C"] },
+            { question: "Welk van deze antwoorden gaat over het begrip: Klimaat?", options: ["A", "B", "C", "D"], answer: ["A"] },
+            { question: "Ik vond deze quizvorm...", options: ["A", "B", "C"], answer: ["B"] }
+        ];
+
+        let currentQuestion = null;
+
+        function checkCoinCollision() {
+            coins.forEach(coin => {
+                if (!coin.collected && Math.abs(player.x - coin.x) < 20) {
+                    coin.collected = true;
+                    showQuestion();
+                }
+            });
+        }
+
+        function showQuestion() {
+            currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById("quiz-question").innerText = currentQuestion.question;
+            document.getElementById("quiz-container").style.display = "block";
+        }
+
+        function answerQuestion(answer) {
+            if (currentQuestion.answer.includes(answer)) {
+                document.getElementById("quiz-container").style.display = "none";
+            } else {
+                resetGame();
+            }
+        }
+
+        function resetGame() {
+            player.x = 50;
+            coins.forEach(coin => coin.collected = false);
+            document.getElementById("quiz-container").style.display = "none";
+        }
+    </script>
+</body>
+</html>
